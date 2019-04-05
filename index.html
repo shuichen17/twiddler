@@ -5,23 +5,68 @@
     <script src="data_generator.js"></script>
   </head>
   <body>
+    <div align="center">
+      <button type="button" style="margin:0 auto;width:200px;" >show new tweets</button>
+    </div>
+    
     <script>
 
       $(document).ready(function(){
         var $body = $('body');
-        $body.html('');
-
-        var index = streams.home.length - 1;
-        while(index >= 0){
+        
+        var firstIndex = 0;
+         $('button').click(function(){
+          firstIndex = streams.home.length;
+          for(var i = 0; i < 10; i++){
+            generateRandomTweet();
+          }
+            display();
+        })
+        var display = function() {
+          var index = streams.home.length - 1;
+        while(index >= firstIndex){
           var tweet = streams.home[index];
-          var $tweet = $('<div></div>');
-          $tweet.text('@' + tweet.user + ': ' + tweet.message);
+          var $tweet = $('<p></p>');
+          var $time = $('<span style="color: blue; font-size: 12px"></span>');
+          
+          var $userBtn = $('<button type="button" id=' + tweet.user + '>@' + tweet.user +'</button>');
+          $time.text('----' + tweet.created_at);
+          $tweet.text( ' : ' + tweet.message);
+          $tweet.append($time);
+          $tweet.prepend($userBtn);
           $tweet.appendTo($body);
           index -= 1;
+          $('p #' + tweet.user).click(function(){
+            var username = $(this).closest('button').attr('id');
+            userAllTweets(username);
+          });
         }
+          var $line = $('<p>==========================================================<p>');
+          $line.appendTo($body);
+        }
+          
+           var userAllTweets = function(username) {
+         $("p").remove();
+        
+         $("div").remove();
 
+        var allT = streams.users[username];
+           
+        var $allT = $('<p></p>');
+        $allT.prepend('<h1 align="center">@' + username + ' ALL Tweets:' + '<br></br></h1>');
+        for(var i = 0; i < allT.length; i++){
+          var cur = allT[i].message;
+          var $timeAt = $('<span style="color: blue; font-size: 12px"></span>');
+          $timeAt.text('----' + allT[i].created_at);
+          $allT.append(cur);
+          $allT.append($timeAt);
+          $allT.append('<br></br>');
+        }
+        $allT.appendTo($body);
+      }
       });
-
+     
+      
     </script>
   </body>
 </html>
